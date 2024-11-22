@@ -1,5 +1,5 @@
-import assignments from "../Database/assignments";
 import * as assignmentsDao from "./dao.js";
+import assignments from "./Database/assignments.js";
 
 export const findAllAssignments = () => assignments;
 
