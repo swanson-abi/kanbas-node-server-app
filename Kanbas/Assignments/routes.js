@@ -1,6 +1,5 @@
 import * as assignmentsDao from "./dao.js";
-import assignments from "./Database/assignments.js";
-
+import assignments from "../Database/assignments.js";
 export const findAllAssignments = () => assignments;
 
 export default function AssignmentRoutes(app) {
