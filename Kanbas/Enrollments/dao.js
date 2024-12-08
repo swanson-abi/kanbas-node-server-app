@@ -1,33 +1,18 @@
-import * as enrollmentsDao from "./dao.js";
-
-export default function EnrollmentRoutes(app) {
-    const enrollUserInCourse = (req, res) => {
-        const { userId, courseId } = req.body;
-        const enrollment = enrollmentsDao.enrollUserInCourse(userId, courseId);
-        res.json(enrollment);
-    };
-    app.post("/api/enrollments", enrollUserInCourse);
-    const findAllEnrollments = (req, res) => {
-        const enrollments = enrollmentsDao.findAllEnrollments();
-        res.json(enrollments);
-    };
-    app.get("/api/enrollments", findAllEnrollments);
-    const findEnrollmentsForUser = (req, res) => {
-        const { userId } = req.params;
-        const enrollments = enrollmentsDao.findEnrollmentsForUser(userId);
-        res.json(enrollments);
-    };
-    app.get("/api/users/:userId/enrollments", findEnrollmentsForUser);
-    const findEnrollmentsForCourse = (req, res) => {
-        const { courseId } = req.params;
-        const enrollments = enrollmentsDao.findEnrollmentsForCourse(courseId);
-        res.json(enrollments);
-    };
-    app.get("/api/courses/:courseId/enrollments", findEnrollmentsForCourse);
-    const unenrollUserFromCourse = (req, res) => {
-        const { userId, courseId } = req.body;
-        enrollmentsDao.unenrollUserFromCourse(userId, courseId);
-        res.sendStatus(204);
-    };
-    app.delete("/api/enrollments", unenrollUserFromCourse);
+import model from "./model.js";
+export async function findCoursesForUser(userId) {
+    const enrollments = await model.find({ user: userId }).populate("course");
+    return enrollments.map((enrollment) => enrollment.course);
+   }
+   
+export async function findUsersForCourse(courseId) {
+ const enrollments = await model.find({ course: courseId }).populate("user");
+ return enrollments.map((enrollment) => enrollment.user);
 }
+
+export function enrollUserInCourse(user, course) {
+    return model.create({ user, course });
+   }
+   export function unenrollUserFromCourse(user, course) {
+    return model.deleteOne({ user, course });
+   }
+   
